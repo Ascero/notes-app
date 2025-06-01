@@ -1,0 +1,18 @@
+@use './colors' as colors;
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: colors.$background-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: colors.$border-medium;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: colors.$border-dark;
+}
