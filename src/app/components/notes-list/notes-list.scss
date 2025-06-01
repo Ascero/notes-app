@@ -1,0 +1,70 @@
+@use '../../../styles/colors' as colors;
+
+.notes-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 80px;
+}
+
+.note-card {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 210px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px colors.$shadow-light;
+  }
+
+  .note-card-content {
+    flex: 1;
+  }
+}
+
+.note-preview {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: colors.$text-secondary;
+
+  .empty-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1.5rem;
+    color: colors.$text-hint;
+  }
+
+  h2 {
+    margin: 0 0 10px 0;
+    color: colors.$text-disabled;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.add-note-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
