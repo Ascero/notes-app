@@ -1,0 +1,23 @@
+.search-container {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.search-field {
+  flex: 1;
+}
+
+.clear-button {
+  margin-right: 0.5rem;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+}

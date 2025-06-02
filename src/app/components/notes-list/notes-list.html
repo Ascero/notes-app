@@ -1,6 +1,7 @@
 <div class="notes-container">
   <div class="header">
     <h1>My Notes</h1>
+    <app-note-search (searchChanged)="onSearchChanged($event)"></app-note-search>
   </div>
 
   <div class="notes-grid">

@@ -13,6 +13,7 @@ describe('NotesListComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let mockNotes: Note[];
   let notesSignal: WritableSignal<Note[]>;
+  let filteredNotesSignal: WritableSignal<Note[]>;
 
   beforeEach(async () => {
     mockNotes = [
@@ -41,9 +42,11 @@ describe('NotesListComponent', () => {
     ];
 
     notesSignal = signal(mockNotes);
+    filteredNotesSignal = signal(mockNotes);
 
-    const notesServiceSpy = jasmine.createSpyObj('NotesService', ['deleteNote'], {
+    const notesServiceSpy = jasmine.createSpyObj('NotesService', ['deleteNote', 'setSearchTerm'], {
       notes: notesSignal,
+      filteredNotes: filteredNotesSignal,
     });
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -168,6 +171,52 @@ describe('NotesListComponent', () => {
       const addButton = compiled.querySelector('.add-note-button');
 
       expect(addButton).toBeTruthy();
+    });
+  });
+
+  describe('when searching', () => {
+    it('should call setSearchTerm when search changes', () => {
+      const searchTerm = 'test search';
+
+      component.onSearchChanged(searchTerm);
+
+      expect(notesService.setSearchTerm).toHaveBeenCalledWith(searchTerm);
+    });
+
+    it('should display filtered notes when search is applied', () => {
+      const filteredNotes = [mockNotes[0]];
+      filteredNotesSignal.set(filteredNotes);
+
+      fixture.detectChanges();
+
+      expect(component.notes()).toEqual(filteredNotes);
+    });
+
+    it('should update displayed notes when search results change', () => {
+      fixture.detectChanges();
+      let noteCards = fixture.nativeElement.querySelectorAll('.note-card');
+      expect(noteCards.length).toBe(3);
+
+      filteredNotesSignal.set([mockNotes[0], mockNotes[1]]);
+      fixture.detectChanges();
+
+      noteCards = fixture.nativeElement.querySelectorAll('.note-card');
+      expect(noteCards.length).toBe(2);
+    });
+
+    it('should show no notes when search yields empty results', () => {
+      filteredNotesSignal.set([]);
+      fixture.detectChanges();
+
+      const noteCards = fixture.nativeElement.querySelectorAll('.note-card');
+      expect(noteCards.length).toBe(0);
+    });
+
+    it('should render note search component', () => {
+      fixture.detectChanges();
+
+      const searchComponent = fixture.nativeElement.querySelector('app-note-search');
+      expect(searchComponent).toBeTruthy();
     });
   });
 });

@@ -6,10 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { Note } from '../../models/note.interface';
 import { NotesService } from '../../services/notes.service';
+import { NoteSearchComponent } from '../note-search/note-search';
 
 @Component({
   selector: 'app-notes-list',
-  imports: [MatCardModule, MatButtonModule, MatIconModule, DatePipe, SlicePipe],
+  imports: [MatCardModule, MatButtonModule, MatIconModule, DatePipe, SlicePipe, NoteSearchComponent],
   templateUrl: './notes-list.html',
   styleUrl: './notes-list.scss',
 })
@@ -17,7 +18,7 @@ export class NotesListComponent {
   private readonly notesService = inject(NotesService);
   private readonly router = inject(Router);
 
-  public readonly notes: Signal<Note[]> = this.notesService.notes;
+  public readonly notes: Signal<Note[]> = this.notesService.filteredNotes;
 
   public navigateToNoteCreation(): void {
     this.router.navigate(['/note/new']);
@@ -32,5 +33,9 @@ export class NotesListComponent {
     if (confirm('Are you sure you want to delete this note?')) {
       this.notesService.deleteNote(id);
     }
+  }
+
+  public onSearchChanged(searchTerm: string): void {
+    this.notesService.setSearchTerm(searchTerm);
   }
 }

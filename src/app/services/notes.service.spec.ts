@@ -188,4 +188,41 @@ describe('NotesService', () => {
       expect(newService.notes().length).toBe(0);
     });
   });
+
+  describe('when searching', () => {
+    beforeEach(() => {
+      service.createNote('JavaScript Tutorial', 'Learn JavaScript basics');
+      service.createNote('Angular Guide', 'Complete Angular tutorial');
+      service.createNote('CSS Tips', 'CSS styling techniques');
+      service.createNote('Vue Tutorial', 'Vue.js fundamentals');
+    });
+
+    it('should have empty search term initially', () => {
+      expect(service.searchTerm()).toBe('');
+    });
+
+    it('should return all notes when search term is empty', () => {
+      expect(service.filteredNotes().length).toBe(4);
+    });
+
+    it('should filter notes by title', () => {
+      service.setSearchTerm('angular');
+
+      expect(service.filteredNotes().length).toBe(1);
+      expect(service.filteredNotes()[0].title).toBe('Angular Guide');
+    });
+
+    it('should return empty array when no notes match search term', () => {
+      service.setSearchTerm('Python');
+
+      expect(service.filteredNotes().length).toBe(0);
+    });
+
+    it('should trim whitespace from search term', () => {
+      service.setSearchTerm('  css  ');
+
+      expect(service.filteredNotes().length).toBe(1);
+      expect(service.filteredNotes()[0].title).toBe('CSS Tips');
+    });
+  });
 });

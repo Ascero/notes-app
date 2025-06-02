@@ -8,9 +8,22 @@ const NOTE_STORAGE_KEY = 'notes';
 })
 export class NotesService {
   private readonly notesSignal = signal<Note[]>(this.loadInitialNotes());
+  private readonly searchTermSignal = signal<string>('');
 
   public readonly notes: Signal<Note[]> = this.notesSignal.asReadonly();
   public readonly notesCount = computed(() => this.notes().length);
+  public readonly searchTerm: Signal<string> = this.searchTermSignal.asReadonly();
+
+  public readonly filteredNotes = computed(() => {
+    const notes = this.notes();
+    const searchTerm = this.searchTerm().toLowerCase().trim();
+
+    if (!searchTerm) {
+      return notes;
+    }
+
+    return notes.filter((note) => note.title.toLowerCase().includes(searchTerm));
+  });
 
   public getNoteById(id: string): Note | undefined {
     return this.notes().find((note) => note.id === id);
@@ -61,6 +74,10 @@ export class NotesService {
     this.notesSignal.update((notes) => notes.filter((note) => note.id !== id));
 
     this.persistNotes(this.notes());
+  }
+
+  public setSearchTerm(searchTerm: string): void {
+    this.searchTermSignal.set(searchTerm);
   }
 
   private loadInitialNotes(): Note[] {
