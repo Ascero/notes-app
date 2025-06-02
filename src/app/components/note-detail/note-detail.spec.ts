@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Note } from '../../models/note.interface';
 import { NotesService } from '../../services/notes.service';
@@ -69,6 +70,31 @@ describe('NoteDetailComponent', () => {
       component.goBack();
 
       expect(router.navigate).toHaveBeenCalledWith(['/']);
+    });
+
+    it('should call window.print when printNote is called', () => {
+      spyOn(window, 'print');
+
+      component.printNote();
+
+      expect(window.print).toHaveBeenCalled();
+    });
+
+    it('should render print button in template', () => {
+      const printIcons = fixture.debugElement.queryAll(By.css('button mat-icon'));
+      const printIcon = printIcons.find((icon) => icon.nativeElement.textContent.trim() === 'print');
+
+      expect(printIcon).toBeTruthy();
+    });
+
+    it('should call printNote when print button is clicked', () => {
+      spyOn(component, 'printNote');
+      const printIcons = fixture.debugElement.queryAll(By.css('button mat-icon'));
+      const printIconButton = printIcons.find((icon) => icon.nativeElement.textContent.trim() === 'print')?.parent;
+
+      printIconButton?.nativeElement.click();
+
+      expect(component.printNote).toHaveBeenCalled();
     });
 
     describe('delete note', () => {

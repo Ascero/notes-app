@@ -52,4 +52,8 @@ export class NoteDetailComponent {
   public goBack(): void {
     this.router.navigate(['/']);
   }
+
+  public printNote(): void {
+    window.print();
+  }
 }
