@@ -1,6 +1,9 @@
+@forward './styles/colors';
+@forward './styles/mixins';
+@forward './styles/scrollbar';
+
 @use './styles/material/theme';
 @use './styles/colors' as colors;
-@use './styles/scrollbar';
 
 html,
 body {

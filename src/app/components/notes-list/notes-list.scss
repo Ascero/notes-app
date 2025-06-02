@@ -1,4 +1,4 @@
-@use '../../../styles/colors' as colors;
+@use '../../../styles' as styles;
 
 .notes-container {
   max-width: 1200px;
@@ -25,7 +25,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px colors.$shadow-light;
+    box-shadow: 0 4px 20px styles.$shadow-light;
   }
 
   .note-card-content {
@@ -42,19 +42,19 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: colors.$text-secondary;
+  color: styles.$text-secondary;
 
   .empty-icon {
     font-size: 64px;
     width: 64px;
     height: 64px;
     margin-bottom: 1.5rem;
-    color: colors.$text-hint;
+    color: styles.$text-hint;
   }
 
   h2 {
     margin: 0 0 10px 0;
-    color: colors.$text-disabled;
+    color: styles.$text-disabled;
   }
 
   p {

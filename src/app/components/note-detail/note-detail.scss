@@ -1,0 +1,40 @@
+@use '../../../styles' as styles;
+
+@include styles.note-layout-base;
+
+.view-mode {
+  @include styles.details-layout-container;
+
+  .note-title {
+    margin: 0 0 1.5rem 0;
+    color: styles.$text-primary;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .note-meta {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    color: styles.$text-secondary;
+    font-size: 0.9rem;
+
+    span {
+      background: styles.$background-secondary;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+  }
+
+  .note-content {
+    color: styles.$text-primary;
+    line-height: 1.6;
+
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: inherit;
+      margin: 0;
+    }
+  }
+}

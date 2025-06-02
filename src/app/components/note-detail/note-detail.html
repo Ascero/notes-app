@@ -1,0 +1,34 @@
+@let currentNote = note(); @if (currentNote) {
+<div class="note-detail-container">
+  <mat-toolbar class="toolbar">
+    <button matMiniFab color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <span class="spacer"></span>
+
+    <div class="toolbar-actions">
+      <button matMiniFab color="primary" (click)="editNote()">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button matMiniFab color="warn" (click)="delete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <div class="content">
+    <div class="view-mode">
+      <h1 class="note-title">{{ currentNote.title || 'Untitled' }}</h1>
+      <div class="note-meta">
+        <span>Created: {{ currentNote.createdAt | date:'medium' }}</span>
+        <span>Updated: {{ currentNote.updatedAt | date:'medium' }}</span>
+      </div>
+      <div class="note-content">
+        <pre>{{ currentNote.content }}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+}

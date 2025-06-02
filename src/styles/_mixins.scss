@@ -1,0 +1,53 @@
+@use './colors' as colors;
+
+@mixin toolbar-base {
+  .spacer {
+    flex: 1;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}
+
+@mixin details-content-base($padding: 1.5rem) {
+  flex: 1;
+  padding: $padding;
+  overflow-y: auto;
+}
+
+@mixin details-layout-container($max-width: 800px) {
+  max-width: $max-width;
+  margin: 0 auto;
+}
+
+@mixin details-mobile-responsive {
+  @media (max-width: 768px) {
+    .content {
+      padding: 1rem;
+    }
+
+    .view-mode,
+    .edit-form {
+      max-width: 100%;
+    }
+
+    .toolbar-actions {
+      gap: 4px;
+    }
+  }
+}
+
+@mixin note-layout-base {
+  .toolbar {
+    @include toolbar-base;
+  }
+
+  .content {
+    @include details-content-base;
+  }
+
+  @include details-mobile-responsive;
+}
