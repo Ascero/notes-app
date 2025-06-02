@@ -1,0 +1,21 @@
+@use '../../../styles' as styles;
+
+@include styles.note-layout-base;
+
+.edit-form {
+  @include styles.details-layout-container;
+
+  .title-field {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .content-field {
+    width: 100%;
+
+    textarea {
+      min-height: 400px;
+      resize: vertical;
+    }
+  }
+}

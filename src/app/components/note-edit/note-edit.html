@@ -1,0 +1,39 @@
+<div class="note-edit-container">
+  <mat-toolbar class="toolbar">
+    <button matMiniFab color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <span class="spacer"></span>
+
+    <div class="toolbar-actions">
+      <button matMiniFab color="primary" (click)="save()" [disabled]="!canSave()">
+        <mat-icon>save</mat-icon>
+      </button>
+
+      @if (!isNewNote()) {
+      <button matMiniFab color="warn" (click)="cancel()"><mat-icon>cancel</mat-icon></button>
+      }
+    </div>
+  </mat-toolbar>
+
+  <div class="content">
+    <div class="edit-form">
+      <mat-form-field appearance="outline" class="title-field">
+        <mat-label>Title</mat-label>
+        <input matInput [ngModel]="title()" (ngModelChange)="updateTitle($event)" placeholder="Enter note title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="content-field">
+        <mat-label>Content</mat-label>
+        <textarea
+          matInput
+          [ngModel]="content()"
+          (ngModelChange)="updateContent($event)"
+          placeholder="Write your note here..."
+          rows="20"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
