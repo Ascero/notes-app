@@ -1,19 +1,21 @@
 <div class="note-edit-container">
   <mat-toolbar class="toolbar">
-    <button matMiniFab color="primary" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-
-    <span class="spacer"></span>
-
-    <div class="toolbar-actions">
-      <button matMiniFab color="primary" (click)="save()" [disabled]="!canSave()">
-        <mat-icon>save</mat-icon>
+    <div class="toolbar-content">
+      <button matMiniFab color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
       </button>
 
-      @if (!isNewNote()) {
-      <button matMiniFab color="warn" (click)="cancel()"><mat-icon>cancel</mat-icon></button>
-      }
+      <span class="spacer"></span>
+
+      <div class="toolbar-actions">
+        <button matMiniFab color="primary" (click)="save()" [disabled]="!canSave()">
+          <mat-icon>save</mat-icon>
+        </button>
+
+        @if (!isNewNote()) {
+        <button matMiniFab color="warn" (click)="cancel()"><mat-icon>cancel</mat-icon></button>
+        }
+      </div>
     </div>
   </mat-toolbar>
 

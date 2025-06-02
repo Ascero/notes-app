@@ -1,6 +1,14 @@
 @use './colors' as colors;
 
 @mixin toolbar-base {
+  .toolbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
   .spacer {
     flex: 1;
   }

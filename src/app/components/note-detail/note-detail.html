@@ -1,24 +1,26 @@
 @let currentNote = note(); @if (currentNote) {
 <div class="note-detail-container">
   <mat-toolbar class="toolbar">
-    <button matMiniFab color="primary" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-
-    <span class="spacer"></span>
-
-    <div class="toolbar-actions">
-      <button matMiniFab color="primary" (click)="printNote()">
-        <mat-icon>print</mat-icon>
+    <div class="toolbar-content">
+      <button matMiniFab color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
       </button>
 
-      <button matMiniFab color="primary" (click)="editNote()">
-        <mat-icon>edit</mat-icon>
-      </button>
+      <span class="spacer"></span>
 
-      <button matMiniFab color="warn" (click)="delete()">
-        <mat-icon>delete</mat-icon>
-      </button>
+      <div class="toolbar-actions">
+        <button matMiniFab color="primary" (click)="printNote()">
+          <mat-icon>print</mat-icon>
+        </button>
+
+        <button matMiniFab color="primary" (click)="editNote()">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button matMiniFab color="warn" (click)="delete()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
   </mat-toolbar>
 
