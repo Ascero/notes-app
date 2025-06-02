@@ -225,4 +225,68 @@ describe('NotesService', () => {
       expect(service.filteredNotes()[0].title).toBe('CSS Tips');
     });
   });
+
+  describe('when sorting', () => {
+    let firstNote: Note, secondNote: Note, thirdNote: Note;
+
+    beforeEach(() => {
+      service = new NotesService();
+
+      firstNote = service.createNote('First Note', 'Content 1');
+
+      secondNote = service.createNote('Second Note', 'Content 2');
+      secondNote.createdAt = new Date(Date.now() + 1000);
+      secondNote.updatedAt = new Date(Date.now() + 1000);
+
+      thirdNote = service.createNote('Third Note', 'Content 3');
+      thirdNote.createdAt = new Date(Date.now() + 2000);
+      thirdNote.updatedAt = new Date(Date.now() + 2000);
+
+      service['notesSignal'].set([firstNote, secondNote, thirdNote]);
+    });
+
+    it('should have newest sort order initially', () => {
+      expect(service.sortOrder()).toBe('newest');
+    });
+
+    it('should sort notes by newest first by default', () => {
+      const filteredNotes = service.filteredNotes();
+
+      expect(filteredNotes.length).toBe(3);
+      expect(filteredNotes[0].title).toBe('Third Note');
+      expect(filteredNotes[1].title).toBe('Second Note');
+      expect(filteredNotes[2].title).toBe('First Note');
+    });
+
+    it('should sort notes by oldest first when sort order is oldest', () => {
+      service.setSortOrder('oldest');
+
+      const filteredNotes = service.filteredNotes();
+
+      expect(filteredNotes.length).toBe(3);
+      expect(filteredNotes[0].title).toBe('First Note');
+      expect(filteredNotes[1].title).toBe('Second Note');
+      expect(filteredNotes[2].title).toBe('Third Note');
+    });
+
+    it('should apply sorting to filtered search results', () => {
+      const baseTime = new Date('2023-06-01T10:00:00.000Z').getTime();
+      const angularNote = service.createNote('Angular Advanced', 'Advanced Angular concepts');
+
+      angularNote.createdAt = new Date(baseTime);
+      angularNote.updatedAt = new Date(baseTime);
+
+      const currentNotes = service.notes();
+      const updatedNotes = [...currentNotes.slice(0, -1), angularNote];
+      service['notesSignal'].set(updatedNotes);
+
+      service.setSearchTerm('angular');
+      service.setSortOrder('oldest');
+
+      const filteredNotes = service.filteredNotes();
+
+      expect(filteredNotes.length).toBe(1);
+      expect(filteredNotes[0].title).toBe('Angular Advanced');
+    });
+  });
 });

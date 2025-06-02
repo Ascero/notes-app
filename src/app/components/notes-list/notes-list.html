@@ -1,7 +1,19 @@
 <div class="notes-container">
   <div class="header">
     <h1>My Notes</h1>
-    <app-note-search (searchChanged)="onSearchChanged($event)"></app-note-search>
+    <div class="list-controls">
+      <app-note-search (searchChanged)="onSearchChanged($event)"></app-note-search>
+      <div class="sort-controls">
+        <mat-button-toggle-group
+          [hideSingleSelectionIndicator]="true"
+          [value]="sortOrder()"
+          (valueChange)="onSortOrderChanged($event)"
+        >
+          <mat-button-toggle value="newest">Newest First</mat-button-toggle>
+          <mat-button-toggle value="oldest">Oldest First</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
   </div>
 
   <div class="notes-grid">

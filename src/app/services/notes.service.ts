@@ -3,26 +3,37 @@ import { Note } from '../models/note.interface';
 
 const NOTE_STORAGE_KEY = 'notes';
 
+export type SortOrder = 'newest' | 'oldest';
+
 @Injectable({
   providedIn: 'root',
 })
 export class NotesService {
   private readonly notesSignal = signal<Note[]>(this.loadInitialNotes());
   private readonly searchTermSignal = signal<string>('');
+  private readonly sortOrderSignal = signal<SortOrder>('newest');
 
   public readonly notes: Signal<Note[]> = this.notesSignal.asReadonly();
   public readonly notesCount = computed(() => this.notes().length);
   public readonly searchTerm: Signal<string> = this.searchTermSignal.asReadonly();
+  public readonly sortOrder: Signal<SortOrder> = this.sortOrderSignal.asReadonly();
 
   public readonly filteredNotes = computed(() => {
     const notes = this.notes();
     const searchTerm = this.searchTerm().toLowerCase().trim();
+    const sortOrder = this.sortOrder();
 
-    if (!searchTerm) {
-      return notes;
+    let filteredNotes = notes;
+
+    if (searchTerm) {
+      filteredNotes = notes.filter((note) => note.title.toLowerCase().includes(searchTerm));
     }
 
-    return notes.filter((note) => note.title.toLowerCase().includes(searchTerm));
+    return filteredNotes.sort((a, b) => {
+      const aTime = a.updatedAt.getTime();
+      const bTime = b.updatedAt.getTime();
+      return sortOrder === 'newest' ? bTime - aTime : aTime - bTime;
+    });
   });
 
   public getNoteById(id: string): Note | undefined {
@@ -78,6 +89,10 @@ export class NotesService {
 
   public setSearchTerm(searchTerm: string): void {
     this.searchTermSignal.set(searchTerm);
+  }
+
+  public setSortOrder(sortOrder: SortOrder): void {
+    this.sortOrderSignal.set(sortOrder);
   }
 
   private loadInitialNotes(): Note[] {

@@ -44,9 +44,10 @@ describe('NotesListComponent', () => {
     notesSignal = signal(mockNotes);
     filteredNotesSignal = signal(mockNotes);
 
-    const notesServiceSpy = jasmine.createSpyObj('NotesService', ['deleteNote', 'setSearchTerm'], {
+    const notesServiceSpy = jasmine.createSpyObj('NotesService', ['deleteNote', 'setSearchTerm', 'setSortOrder'], {
       notes: notesSignal,
       filteredNotes: filteredNotesSignal,
+      sortOrder: signal('newest'),
     });
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -217,6 +218,18 @@ describe('NotesListComponent', () => {
 
       const searchComponent = fixture.nativeElement.querySelector('app-note-search');
       expect(searchComponent).toBeTruthy();
+    });
+  });
+
+  describe('when sorting', () => {
+    it('should call setSortOrder when sort order changes', () => {
+      component.onSortOrderChanged('oldest');
+
+      expect(notesService.setSortOrder).toHaveBeenCalledWith('oldest');
+    });
+
+    it('should expose sortOrder signal from service', () => {
+      expect(component.sortOrder()).toBe('newest');
     });
   });
 });
