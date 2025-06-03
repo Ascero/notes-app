@@ -48,6 +48,7 @@ describe('NotesListComponent', () => {
       notes: notesSignal,
       filteredNotes: filteredNotesSignal,
       sortOrder: signal('newest'),
+      searchTerm: signal(''),
     });
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 

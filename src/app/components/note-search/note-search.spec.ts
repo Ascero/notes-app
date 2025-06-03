@@ -1,18 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NotesService } from '../../services/notes.service';
 import { NoteSearchComponent } from './note-search';
 
 describe('NoteSearchComponent', () => {
   let component: NoteSearchComponent;
   let fixture: ComponentFixture<NoteSearchComponent>;
+  let notesService: jasmine.SpyObj<NotesService>;
 
   beforeEach(async () => {
+    const notesServiceSpy = jasmine.createSpyObj('NotesService', ['setSearchTerm'], {
+      searchTerm: jasmine.createSpy().and.returnValue(''),
+    });
+
     await TestBed.configureTestingModule({
       imports: [NoteSearchComponent, NoopAnimationsModule],
+      providers: [{ provide: NotesService, useValue: notesServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NoteSearchComponent);
     component = fixture.componentInstance;
+    notesService = TestBed.inject(NotesService) as jasmine.SpyObj<NotesService>;
     fixture.detectChanges();
   });
 
@@ -20,14 +28,14 @@ describe('NoteSearchComponent', () => {
     expect(component.searchTerm()).toBe('');
   });
 
-  it('should update search term when input changes', () => {
+  it('should call notesService.setSearchTerm when input changes', () => {
     const input = fixture.nativeElement.querySelector('.search-input');
     const testValue = 'test search';
 
     input.value = testValue;
     input.dispatchEvent(new Event('input'));
 
-    expect(component.searchTerm()).toBe(testValue);
+    expect(notesService.setSearchTerm).toHaveBeenCalledWith(testValue);
   });
 
   it('should emit search term when input changes', () => {
@@ -42,7 +50,7 @@ describe('NoteSearchComponent', () => {
   });
 
   it('should show clear button when search term is not empty', () => {
-    component.searchTerm.set('test');
+    (notesService.searchTerm as jasmine.Spy).and.returnValue('test');
     fixture.detectChanges();
 
     const clearButton = fixture.nativeElement.querySelector('.clear-button');
@@ -50,22 +58,22 @@ describe('NoteSearchComponent', () => {
   });
 
   it('should not show clear button when search term is empty', () => {
-    component.searchTerm.set('');
+    (notesService.searchTerm as jasmine.Spy).and.returnValue('');
     fixture.detectChanges();
 
     const clearButton = fixture.nativeElement.querySelector('.clear-button');
     expect(clearButton).toBeFalsy();
   });
 
-  it('should clear search term when clear button is clicked', () => {
+  it('should call notesService.setSearchTerm with empty string when clear button is clicked', () => {
     spyOn(component.searchChanged, 'emit');
-    component.searchTerm.set('test');
+    (notesService.searchTerm as jasmine.Spy).and.returnValue('test');
     fixture.detectChanges();
 
     const clearButton = fixture.nativeElement.querySelector('.clear-button');
     clearButton.click();
 
-    expect(component.searchTerm()).toBe('');
+    expect(notesService.setSearchTerm).toHaveBeenCalledWith('');
     expect(component.searchChanged.emit).toHaveBeenCalledWith('');
   });
 });
