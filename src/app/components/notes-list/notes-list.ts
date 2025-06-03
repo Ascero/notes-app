@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { Note } from '../../models/note.interface';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { NotesService, SortOrder } from '../../services/notes.service';
 import { NoteSearchComponent } from '../note-search/note-search';
 
@@ -26,6 +27,7 @@ import { NoteSearchComponent } from '../note-search/note-search';
 export class NotesListComponent {
   private readonly notesService = inject(NotesService);
   private readonly router = inject(Router);
+  private readonly confirmationService = inject(ConfirmationService);
 
   public readonly notes: Signal<Note[]> = this.notesService.filteredNotes;
   public readonly sortOrder: Signal<SortOrder> = this.notesService.sortOrder;
@@ -40,9 +42,13 @@ export class NotesListComponent {
 
   public deleteNote(event: Event, id: string): void {
     event.stopPropagation();
-    if (confirm('Are you sure you want to delete this note?')) {
-      this.notesService.deleteNote(id);
-    }
+    const noteTitle = this.notes().find((note) => note.id === id)?.title;
+
+    this.confirmationService.confirmDelete(noteTitle).subscribe((confirmed) => {
+      if (confirmed) {
+        this.notesService.deleteNote(id);
+      }
+    });
   }
 
   public onSearchChanged(searchTerm: string): void {

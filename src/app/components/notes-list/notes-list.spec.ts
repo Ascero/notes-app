@@ -2,7 +2,9 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 import { Note } from '../../models/note.interface';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { NotesService } from '../../services/notes.service';
 import { NotesListComponent } from './notes-list';
 
@@ -11,6 +13,7 @@ describe('NotesListComponent', () => {
   let fixture: ComponentFixture<NotesListComponent>;
   let notesService: jasmine.SpyObj<NotesService>;
   let router: jasmine.SpyObj<Router>;
+  let confirmationService: jasmine.SpyObj<ConfirmationService>;
   let mockNotes: Note[];
   let notesSignal: WritableSignal<Note[]>;
   let filteredNotesSignal: WritableSignal<Note[]>;
@@ -51,12 +54,14 @@ describe('NotesListComponent', () => {
       searchTerm: signal(''),
     });
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const confirmationServiceSpy = jasmine.createSpyObj('ConfirmationService', ['confirmDelete']);
 
     await TestBed.configureTestingModule({
       imports: [NotesListComponent, NoopAnimationsModule],
       providers: [
         { provide: NotesService, useValue: notesServiceSpy },
         { provide: Router, useValue: routerSpy },
+        { provide: ConfirmationService, useValue: confirmationServiceSpy },
       ],
     }).compileComponents();
 
@@ -64,6 +69,7 @@ describe('NotesListComponent', () => {
     component = fixture.componentInstance;
     notesService = TestBed.inject(NotesService) as jasmine.SpyObj<NotesService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    confirmationService = TestBed.inject(ConfirmationService) as jasmine.SpyObj<ConfirmationService>;
   });
 
   it('should display notes from service', () => {
@@ -92,27 +98,27 @@ describe('NotesListComponent', () => {
     });
 
     it('should delete note when confirmed', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmationService.confirmDelete.and.returnValue(of(true));
 
       component.deleteNote(mockEvent, 'note-1');
 
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
-      expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this note?');
+      expect(confirmationService.confirmDelete).toHaveBeenCalledWith('First Note');
       expect(notesService.deleteNote).toHaveBeenCalledWith('note-1');
     });
 
     it('should not delete note when not confirmed', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
+      confirmationService.confirmDelete.and.returnValue(of(false));
 
       component.deleteNote(mockEvent, 'note-1');
 
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
-      expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this note?');
+      expect(confirmationService.confirmDelete).toHaveBeenCalledWith('First Note');
       expect(notesService.deleteNote).not.toHaveBeenCalled();
     });
 
     it('should stop event propagation', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
+      confirmationService.confirmDelete.and.returnValue(of(false));
 
       component.deleteNote(mockEvent, 'note-1');
 

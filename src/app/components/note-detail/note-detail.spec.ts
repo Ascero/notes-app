@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 import { Note } from '../../models/note.interface';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { NotesService } from '../../services/notes.service';
 import { NoteDetailComponent } from './note-detail';
 
@@ -21,6 +23,7 @@ describe('NoteDetailComponent', () => {
   let hostComponent: TestHostComponent;
   let notesService: jasmine.SpyObj<NotesService>;
   let router: jasmine.SpyObj<Router>;
+  let confirmationService: jasmine.SpyObj<ConfirmationService>;
 
   const mockNote: Note = {
     id: 'test-id',
@@ -33,12 +36,14 @@ describe('NoteDetailComponent', () => {
   beforeEach(async () => {
     const notesServiceSpy = jasmine.createSpyObj('NotesService', ['getNoteById', 'deleteNote']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const confirmationServiceSpy = jasmine.createSpyObj('ConfirmationService', ['confirmDelete']);
 
     await TestBed.configureTestingModule({
       imports: [NoteDetailComponent, TestHostComponent],
       providers: [
         { provide: NotesService, useValue: notesServiceSpy },
         { provide: Router, useValue: routerSpy },
+        { provide: ConfirmationService, useValue: confirmationServiceSpy },
       ],
     }).compileComponents();
 
@@ -47,6 +52,7 @@ describe('NoteDetailComponent', () => {
     component = fixture.debugElement.children[0].componentInstance;
     notesService = TestBed.inject(NotesService) as jasmine.SpyObj<NotesService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    confirmationService = TestBed.inject(ConfirmationService) as jasmine.SpyObj<ConfirmationService>;
   });
 
   describe('when note exists', () => {
@@ -99,22 +105,22 @@ describe('NoteDetailComponent', () => {
 
     describe('delete note', () => {
       it('should delete note and navigate home when confirmed', () => {
-        spyOn(window, 'confirm').and.returnValue(true);
+        confirmationService.confirmDelete.and.returnValue(of(true));
         notesService.deleteNote.and.returnValue();
 
         component.delete();
 
-        expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this note?');
+        expect(confirmationService.confirmDelete).toHaveBeenCalledWith('Test Note');
         expect(notesService.deleteNote).toHaveBeenCalledWith('test-id');
         expect(router.navigate).toHaveBeenCalledWith(['/']);
       });
 
       it('should not delete note when not confirmed', () => {
-        spyOn(window, 'confirm').and.returnValue(false);
+        confirmationService.confirmDelete.and.returnValue(of(false));
 
         component.delete();
 
-        expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete this note?');
+        expect(confirmationService.confirmDelete).toHaveBeenCalledWith('Test Note');
         expect(notesService.deleteNote).not.toHaveBeenCalled();
       });
     });
@@ -138,10 +144,11 @@ describe('NoteDetailComponent', () => {
     });
 
     it('should not delete when note does not exist', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmationService.confirmDelete.and.returnValue(of(true));
 
       component.delete();
 
+      expect(confirmationService.confirmDelete).not.toHaveBeenCalled();
       expect(notesService.deleteNote).not.toHaveBeenCalled();
     });
   });

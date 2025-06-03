@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { Note } from '../../models/note.interface';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { NotesService } from '../../services/notes.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class NoteDetailComponent {
 
   private readonly router = inject(Router);
   private readonly notesService = inject(NotesService);
+  private readonly confirmationService = inject(ConfirmationService);
 
   constructor() {
     effect(() => {
@@ -42,10 +44,13 @@ export class NoteDetailComponent {
   public delete(): void {
     const currentNote = this.note();
 
-    if (currentNote && confirm('Are you sure you want to delete this note?')) {
-      this.notesService.deleteNote(currentNote.id);
-
-      this.router.navigate(['/']);
+    if (currentNote) {
+      this.confirmationService.confirmDelete(currentNote.title).subscribe((confirmed) => {
+        if (confirmed) {
+          this.notesService.deleteNote(currentNote.id);
+          this.router.navigate(['/']);
+        }
+      });
     }
   }
 
